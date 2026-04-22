@@ -117,7 +117,7 @@ const Login = ({ setView }) => {
             onSuccess={(credentialResponse) => {
               console.log("ID TOKEN:", credentialResponse.credential);
 
-              fetch("http://localhost:8080/api/auth/google", {
+              fetch("https://privet-coach-backend-2.onrender.com/api/auth/google", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
