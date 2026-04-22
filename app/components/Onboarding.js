@@ -45,18 +45,35 @@ const Onboarding = ({ setView }) => {
         <div className="flex flex-col gap-3 w-full">
           <GoogleLogin
             className="flex items-center justify-center gap-3 w-full py-4 border border-[#E6E8E7] rounded-full hover:bg-gray-50 transition font-medium"
-            onSuccess={(credentialResponse) => {
+            onSuccess={async (credentialResponse)  => {
               console.log("ID TOKEN:", credentialResponse.credential);
 
-              fetch("https://privet-coach-backend-2.onrender.com/api/auth/google", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  idToken: credentialResponse.credential
-                }),
-              });
+              
+                try {
+                  const response = await fetch("https://privet-coach-backend-2.onrender.com/api/auth/google", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      idToken: credentialResponse.credential
+                    }),
+                  });
+
+                  const text = await response.text();
+                  console.log(response)
+                  if (response.ok) {
+                    alert("✅ Login Success");
+                    console.log("Success:", text);
+                  } else {
+                    alert("❌ Login Failed");
+                    console.log("Error:", text);
+                  }
+
+                } catch (error) {
+                  console.error("Error:", error);
+                  alert("❌ Server Error");
+                }
             }}
             onError={() => console.log("Login Failed")}
           />
