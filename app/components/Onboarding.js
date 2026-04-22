@@ -2,6 +2,8 @@
 import { FcGoogle } from 'react-icons/fc';
 import { FaApple, FaUserAlt } from 'react-icons/fa';
 import Image from 'next/image';
+import { GoogleLogin } from '@react-oauth/google';
+
 
 const Onboarding = ({ setView }) => {
   return (
@@ -41,9 +43,23 @@ const Onboarding = ({ setView }) => {
 
         {/* Buttons */}
         <div className="flex flex-col gap-3 w-full">
-          <button className="flex items-center justify-center gap-3 w-full py-4 border border-[#E6E8E7] rounded-full hover:bg-gray-50 transition font-medium">
-            <FcGoogle className="texxt-0.5" /> Continue with Google
-          </button>
+          <GoogleLogin
+            className="flex items-center justify-center gap-3 w-full py-4 border border-[#E6E8E7] rounded-full hover:bg-gray-50 transition font-medium"
+            onSuccess={(credentialResponse) => {
+              console.log("ID TOKEN:", credentialResponse.credential);
+
+              fetch("https://privet-coach-backend-2.onrender.com/api/auth/google", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  idToken: credentialResponse.credential
+                }),
+              });
+            }}
+            onError={() => console.log("Login Failed")}
+          />
           
           <button className="flex items-center justify-center gap-3 w-full py-4 bg-[#A3E635] text-white rounded-full hover:bg-lime-500 transition font-medium">
             <FaApple className="text-2xl" /> Continue with Apple
